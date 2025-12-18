@@ -10,8 +10,10 @@ jobs:
     runs-on: ubuntu-latest
     
     permissions:
+      id-token: write
       contents: read
       checks: write
+      actions: read
       pull-requests: write
     
     steps:
@@ -42,3 +44,5 @@ jobs:
           job_summary: true
           require_tests: true
           check_retries: true
+          comment: true
+
