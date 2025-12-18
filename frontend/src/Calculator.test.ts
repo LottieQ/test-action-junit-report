@@ -18,6 +18,11 @@ describe('Calculator', () => {
             expect(calculator.add(-10, 5)).toBe(-5);
         });
 
+        // 故意制造测试失败
+        test('should fail: incorrect addition result', () => {
+            expect(calculator.add(2, 2)).toBe(5); // 2 + 2 = 4, 期望 5 会失败
+        });
+
         test('should handle zero', () => {
             expect(calculator.add(0, 0)).toBe(0);
             expect(calculator.add(5, 0)).toBe(5);
