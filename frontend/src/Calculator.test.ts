@@ -18,6 +18,11 @@ describe('Calculator', () => {
             expect(calculator.add(-10, 5)).toBe(-5);
         });
 
+        // Intentionally failing test for testing annotations
+        test('should fail: 2 + 2 should equal 5', () => {
+            expect(calculator.add(2, 2)).toBe(5); // This will fail: 2 + 2 = 4, not 5
+        });
+
         test('should handle zero', () => {
             expect(calculator.add(0, 0)).toBe(0);
             expect(calculator.add(5, 0)).toBe(5);
