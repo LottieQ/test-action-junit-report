@@ -1,0 +1,70 @@
+name: Frontend Test Report
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:
+
+jobs:
+  test-frontend:
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: read
+      checks: write
+      pull-requests: write
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up JDK 11
+        uses: actions/setup-java@v4
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+          cache: maven
+      
+      - name: Run frontend tests with Maven
+        run: mvn clean test -pl frontend
+        continue-on-error: true
+      
+      - name: Publish Test Report
+        uses: mikepenz/action-junit-report@v4
+        if: always()
+        with:
+          report_paths: 'frontend/target/surefire-reports/*.xml'
+          check_name: 'Frontend Test Results'
+          detailed_summary: true
+          include_passed: true
+          fail_on_failure: true
+          annotate_only: false
+      
+      - name: Upload Surefire HTML Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: frontend-surefire-report
+          path: frontend/target/site/
+          retention-days: 30
+      
+      - name: Comment Test Summary on PR
+        uses: actions/github-script@v7
+        if: always() && github.event_name == 'pull_request'
+        with:
+          script: |
+            const fs = require('fs');
+            const reportPath = 'frontend/target/site/surefire-report.html';
+            
+            let comment = '## 🧪 Frontend Test Results\n\n';
+            comment += '✅ Tests have been executed. Check the details in the **Checks** tab.\n\n';
+            comment += '📊 [Download detailed HTML report](../actions/runs/${{ github.run_id }})\n';
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
