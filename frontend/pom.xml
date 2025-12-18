@@ -58,15 +58,30 @@
                             <arguments>run build</arguments>
                         </configuration>
                     </execution>
-                    <!-- npm test -->
+                </executions>
+            </plugin>
+
+            <!-- Exec Maven Plugin to run npm test -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.5.0</version>
+                <executions>
                     <execution>
-                        <id>npm test</id>
-                        <goals>
-                            <goal>npm</goal>
-                        </goals>
+                        <id>run-npm-test</id>
                         <phase>test</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
                         <configuration>
-                            <arguments>test</arguments>
+                            <executable>npm</executable>
+                            <workingDirectory>${project.basedir}</workingDirectory>
+                            <arguments>
+                                <argument>test</argument>
+                            </arguments>
+                            <environmentVariables>
+                                <PATH>${project.build.directory}/node:${env.PATH}</PATH>
+                            </environmentVariables>
                         </configuration>
                     </execution>
                 </executions>

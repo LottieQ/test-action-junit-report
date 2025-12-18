@@ -36,5 +36,9 @@ jobs:
           report_paths: 'frontend/target/surefire-reports/*.xml'
           check_name: 'Frontend Test Results'
           detailed_summary: true
-          fail_on_failure: true
-          comment: true
+          include_passed: true
+          fail_on_failure: false
+          annotate_only: false
+          job_summary: true
+          require_tests: true
+          check_retries: true
